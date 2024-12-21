@@ -1,7 +1,12 @@
 -- Write your PostgreSQL query statement below
-select p.project_id, round(avg(e.experience_years):: numeric , 2) as average_years
+WITH data AS (
+    SELECT prj.project_id, SUM(emp.experience_years) AS totalexp, COUNT(emp.employee_id) AS totalcount
+    FROM Employee emp
+    LEFT JOIN Project prj
+    ON prj.employee_id = emp.employee_id
+    GROUP BY  prj.project_id
+)
 
-from Project as p 
-left join Employee as e on p.employee_id = e.employee_id
-
-group by p.project_id
+SELECT project_id, ROUND(totalexp/totalcount:: NUMERIC, 2) AS average_years
+FROM data
+WHERE project_id IS NOT NULL;
