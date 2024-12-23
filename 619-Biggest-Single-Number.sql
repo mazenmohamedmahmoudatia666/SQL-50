@@ -1,9 +1,4 @@
-SELECT COALESCE (MAX(num), null) AS num FROM myNumbers
-WHERE num IN
-(SELECT 
-num
-FROM MyNumbers 
-GROUP BY num 
-HAVING count(num) = 1 
-ORDER BY num DESC)
 
+select max(num) as num from (
+    select num from MyNumbers group by num having count(num)=1
+)
